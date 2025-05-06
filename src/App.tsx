@@ -3,6 +3,9 @@ import { Routes, Route, Link } from 'react-router-dom';
 import Home from './pages/Home';
 import Chat from './pages/Chat';
 
+// Configuración para API - funciona tanto en desarrollo como en producción
+const baseUrl = import.meta.env.VITE_APP_API_URL || '/api';
+
 const App: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -55,10 +58,10 @@ const App: React.FC = () => {
           <div className="footer-section">
             <h4>Plantillas</h4>
             <div className="footer-links">
-              <a href="/excel-template?type=flujo_caja">Flujo de Caja</a>
-              <a href="/excel-template?type=nomina">Nómina</a>
-              <a href="/excel-template?type=balance_general">Balance General</a>
-              <a href="/excel-template?type=estado_resultados">Estado de Resultados</a>
+              <a href={`${baseUrl}/excel-template?type=flujo_caja`}>Flujo de Caja</a>
+              <a href={`${baseUrl}/excel-template?type=nomina`}>Nómina</a>
+              <a href={`${baseUrl}/excel-template?type=balance_general`}>Balance General</a>
+              <a href={`${baseUrl}/excel-template?type=estado_resultados`}>Estado de Resultados</a>
             </div>
           </div>
 

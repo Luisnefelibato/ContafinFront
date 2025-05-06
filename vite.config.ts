@@ -1,10 +1,19 @@
-/// <reference types="vite/client" />
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 
-interface ImportMetaEnv {
-  readonly VITE_APP_API_URL: string;
-  // Agrega aquí otras variables de entorno si es necesario
-}
-
-interface ImportMeta {
-  readonly env: ImportMetaEnv;
-}
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    proxy: {
+      '/api': {
+        target: 'https://contafin.onrender.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '')
+      }
+    }
+  },
+  build: {
+    outDir: 'dist',
+  }
+})

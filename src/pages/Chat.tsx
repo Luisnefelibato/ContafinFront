@@ -4,6 +4,9 @@ import ReactMarkdown from 'react-markdown';
 import { FiSend, FiDownload } from 'react-icons/fi';
 import './Chat.css';
 
+// Configuración para API - funciona tanto en desarrollo como en producción
+const baseUrl = import.meta.env.VITE_APP_API_URL || '/api';
+
 interface Message {
   role: 'user' | 'assistant';
   content: string;
@@ -48,13 +51,8 @@ const Chat: React.FC = () => {
     setIsLoading(true);
 
     try {
-      // En desarrollo, usamos un proxy via '/api'
-      // En producción, usamos la URL directa
-      const baseUrl = import.meta.env.PROD 
-        ? 'https://contafin.onrender.com' 
-        : '/api';
-        
       // Send message to the ContaFin API
+      // Usamos baseUrl para que funcione en desarrollo y producción
       const response = await axios.post(`${baseUrl}/chat`, {
         message: input,
         session_id: sessionId
@@ -111,16 +109,16 @@ const Chat: React.FC = () => {
           <div className="download-options">
             <h4>Descargar Plantillas:</h4>
             <div className="download-buttons">
-              <a href="https://contafin.onrender.com/excel-template?type=flujo_caja" className="download-link" target="_blank" rel="noopener noreferrer">
+              <a href={`${baseUrl}/excel-template?type=flujo_caja`} className="download-link" target="_blank" rel="noopener noreferrer">
                 <FiDownload /> Flujo de Caja
               </a>
-              <a href="https://contafin.onrender.com/excel-template?type=nomina" className="download-link" target="_blank" rel="noopener noreferrer">
+              <a href={`${baseUrl}/excel-template?type=nomina`} className="download-link" target="_blank" rel="noopener noreferrer">
                 <FiDownload /> Nómina
               </a>
-              <a href="https://contafin.onrender.com/excel-template?type=balance_general" className="download-link" target="_blank" rel="noopener noreferrer">
+              <a href={`${baseUrl}/excel-template?type=balance_general`} className="download-link" target="_blank" rel="noopener noreferrer">
                 <FiDownload /> Balance General
               </a>
-              <a href="https://contafin.onrender.com/excel-template?type=estado_resultados" className="download-link" target="_blank" rel="noopener noreferrer">
+              <a href={`${baseUrl}/excel-template?type=estado_resultados`} className="download-link" target="_blank" rel="noopener noreferrer">
                 <FiDownload /> Estado de Resultados
               </a>
             </div>
@@ -152,7 +150,7 @@ const Chat: React.FC = () => {
             )}
             
             {message.role === 'assistant' && containsReport(message.content) && (
-              <a href="https://contafin.onrender.com/report" className="download-link" target="_blank" rel="noopener noreferrer">
+              <a href={`${baseUrl}/report`} className="download-link" target="_blank" rel="noopener noreferrer">
                 <FiDownload /> Descargar Informe Completo
               </a>
             )}
