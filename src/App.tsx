@@ -79,7 +79,7 @@ const App: React.FC = () => {
             <h4>Contacto</h4>
             <div className="footer-links">
               <a href="mailto:info@innovacionfinanciera.com">info@innovacionfinanciera.com</a>
-              <a href="tel:+573001234567">+57 300 123 4567</a>
+              <a href="tel:+573001234567">+57 319 3431250</a>
               <p>Bogotá, Colombia</p>
             </div>
           </div>

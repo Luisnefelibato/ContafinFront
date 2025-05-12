@@ -1,9 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FiFileText, FiBarChart2, FiDollarSign, FiPieChart, FiTrendingUp, FiShield, FiChevronDown } from 'react-icons/fi';
+import { FiFileText, FiBarChart2, FiDollarSign, FiPieChart, FiTrendingUp, FiShield, FiChevronDown, FiDownload } from 'react-icons/fi';
 import './Home.css';
 
 const Home: React.FC = () => {
+  const [downloadingTemplate, setDownloadingTemplate] = useState<string | null>(null);
+  const [downloadStatus, setDownloadStatus] = useState<{[key: string]: string}>({});
+
   // Función para manejar el scroll suave al hacer clic en un enlace de anclaje
   const handleSmoothScroll = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
     e.preventDefault();
@@ -13,6 +16,49 @@ const Home: React.FC = () => {
         top: targetElement.offsetTop - 80, // Ajuste para el header fijo
         behavior: 'smooth'
       });
+    }
+  };
+
+  // Función para manejar la descarga de plantillas Excel
+  const handleDownloadTemplate = (templateType: string) => {
+    try {
+      setDownloadingTemplate(templateType);
+      setDownloadStatus(prev => ({ ...prev, [templateType]: 'Descargando...' }));
+      
+      // Usar window.open para descargar el archivo
+      window.open(`/api/excel-template?type=${templateType}`, '_blank');
+      
+      // Simular éxito después de un momento
+      setTimeout(() => {
+        setDownloadStatus(prev => ({ ...prev, [templateType]: '✅ Descargado' }));
+        
+        // Limpiar el estado después de unos segundos
+        setTimeout(() => {
+          setDownloadStatus(prev => {
+            const newStatus = { ...prev };
+            delete newStatus[templateType];
+            return newStatus;
+          });
+        }, 3000);
+      }, 1500);
+      
+    } catch (error) {
+      console.error(`Error al descargar plantilla ${templateType}:`, error);
+      setDownloadStatus(prev => ({ ...prev, [templateType]: '❌ Error' }));
+      
+      // Limpiar el estado de error después de unos segundos
+      setTimeout(() => {
+        setDownloadStatus(prev => {
+          const newStatus = { ...prev };
+          delete newStatus[templateType];
+          return newStatus;
+        });
+      }, 3000);
+      
+    } finally {
+      setTimeout(() => {
+        setDownloadingTemplate(null);
+      }, 2000);
     }
   };
 
@@ -158,7 +204,13 @@ const Home: React.FC = () => {
               </div>
               <h3>Flujo de Caja</h3>
               <p>Controla las entradas y salidas de efectivo de tu negocio con proyecciones a 6 meses.</p>
-              <a href="https://contafin.onrender.com/excel-template?type=flujo_caja" className="btn btn-outline" target="_blank" rel="noopener noreferrer">Descargar</a>
+              <button 
+                onClick={() => handleDownloadTemplate('flujo_caja')} 
+                className={`btn btn-outline ${downloadingTemplate === 'flujo_caja' ? 'downloading' : ''}`}
+                disabled={downloadingTemplate !== null}
+              >
+                <FiDownload /> {downloadStatus['flujo_caja'] || 'Descargar'}
+              </button>
             </div>
             
             <div className="template-card" style={{ '--animation-order': 1 } as React.CSSProperties}>
@@ -167,7 +219,13 @@ const Home: React.FC = () => {
               </div>
               <h3>Nómina</h3>
               <p>Calcula salarios, deducciones y aportes patronales con actualización automática.</p>
-              <a href="https://contafin.onrender.com/excel-template?type=nomina" className="btn btn-outline" target="_blank" rel="noopener noreferrer">Descargar</a>
+              <button 
+                onClick={() => handleDownloadTemplate('nomina')} 
+                className={`btn btn-outline ${downloadingTemplate === 'nomina' ? 'downloading' : ''}`}
+                disabled={downloadingTemplate !== null}
+              >
+                <FiDownload /> {downloadStatus['nomina'] || 'Descargar'}
+              </button>
             </div>
             
             <div className="template-card" style={{ '--animation-order': 2 } as React.CSSProperties}>
@@ -176,7 +234,13 @@ const Home: React.FC = () => {
               </div>
               <h3>Balance General</h3>
               <p>Estructura el balance de tu empresa con activos, pasivos y patrimonio claramente organizados.</p>
-              <a href="https://contafin.onrender.com/excel-template?type=balance_general" className="btn btn-outline" target="_blank" rel="noopener noreferrer">Descargar</a>
+              <button 
+                onClick={() => handleDownloadTemplate('balance_general')} 
+                className={`btn btn-outline ${downloadingTemplate === 'balance_general' ? 'downloading' : ''}`}
+                disabled={downloadingTemplate !== null}
+              >
+                <FiDownload /> {downloadStatus['balance_general'] || 'Descargar'}
+              </button>
             </div>
             
             <div className="template-card" style={{ '--animation-order': 3 } as React.CSSProperties}>
@@ -185,7 +249,13 @@ const Home: React.FC = () => {
               </div>
               <h3>Estado de Resultados</h3>
               <p>Analiza ingresos, costos y gastos para visualizar la rentabilidad de tu operación.</p>
-              <a href="https://contafin.onrender.com/excel-template?type=estado_resultados" className="btn btn-outline" target="_blank" rel="noopener noreferrer">Descargar</a>
+              <button 
+                onClick={() => handleDownloadTemplate('estado_resultados')} 
+                className={`btn btn-outline ${downloadingTemplate === 'estado_resultados' ? 'downloading' : ''}`}
+                disabled={downloadingTemplate !== null}
+              >
+                <FiDownload /> {downloadStatus['estado_resultados'] || 'Descargar'}
+              </button>
             </div>
             
             <div className="template-card" style={{ '--animation-order': 4 } as React.CSSProperties}>
@@ -194,7 +264,13 @@ const Home: React.FC = () => {
               </div>
               <h3>Punto de Equilibrio</h3>
               <p>Determina el nivel de ventas necesario para cubrir costos con análisis gráfico.</p>
-              <a href="https://contafin.onrender.com/excel-template?type=punto_equilibrio" className="btn btn-outline" target="_blank" rel="noopener noreferrer">Descargar</a>
+              <button 
+                onClick={() => handleDownloadTemplate('punto_equilibrio')} 
+                className={`btn btn-outline ${downloadingTemplate === 'punto_equilibrio' ? 'downloading' : ''}`}
+                disabled={downloadingTemplate !== null}
+              >
+                <FiDownload /> {downloadStatus['punto_equilibrio'] || 'Descargar'}
+              </button>
             </div>
             
             <div className="template-card" style={{ '--animation-order': 5 } as React.CSSProperties}>
@@ -203,7 +279,13 @@ const Home: React.FC = () => {
               </div>
               <h3>Ratios Financieros</h3>
               <p>Evalúa la salud financiera de tu empresa con indicadores de liquidez, solvencia y rentabilidad.</p>
-              <a href="https://contafin.onrender.com/excel-template?type=ratios_financieros" className="btn btn-outline" target="_blank" rel="noopener noreferrer">Descargar</a>
+              <button 
+                onClick={() => handleDownloadTemplate('ratios_financieros')} 
+                className={`btn btn-outline ${downloadingTemplate === 'ratios_financieros' ? 'downloading' : ''}`}
+                disabled={downloadingTemplate !== null}
+              >
+                <FiDownload /> {downloadStatus['ratios_financieros'] || 'Descargar'}
+              </button>
             </div>
           </div>
         </div>
